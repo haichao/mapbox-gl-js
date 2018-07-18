@@ -90,25 +90,18 @@ export const verticalizedCharacterMap = {
     '｣': '﹂'
 };
 
-export default function verticalizePunctuation(input: string) {
-    let output = '';
-
+export default function verticalizePunctuation(input: Array<{ charCode: number, section: number}>) {
     for (let i = 0; i < input.length; i++) {
-        const nextCharCode = input.charCodeAt(i + 1) || null;
-        const prevCharCode = input.charCodeAt(i - 1) || null;
+        const nextChar = input[i + 1] || null;
+        const prevChar = input[i - 1] || null;
 
         const canReplacePunctuation = (
-            (!nextCharCode || !charHasRotatedVerticalOrientation(nextCharCode) || verticalizedCharacterMap[input[i + 1]]) &&
-            (!prevCharCode || !charHasRotatedVerticalOrientation(prevCharCode) || verticalizedCharacterMap[input[i - 1]])
+            (!nextChar || !charHasRotatedVerticalOrientation(nextChar.charCode) || verticalizedCharacterMap[input[i + 1].charCode]) &&
+            (!prevChar || !charHasRotatedVerticalOrientation(prevChar.charCode) || verticalizedCharacterMap[input[i - 1].charCode])
         );
 
-        if (canReplacePunctuation && verticalizedCharacterMap[input[i]]) {
-            output += verticalizedCharacterMap[input[i]];
-        } else {
-            output += input[i];
+        if (canReplacePunctuation && verticalizedCharacterMap[input[i].charCode]) {
+            input[i].charCode = verticalizedCharacterMap[input[i].charCode];
         }
     }
-
-    return output;
 }
-
